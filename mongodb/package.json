@@ -1,0 +1,8 @@
+{
+  "name": "911-calls-mongodb",
+  "version": "1.0.0",
+  "dependencies": {
+    "csv-parser": "^2.3.5",
+    "mongodb": "3.6.5"
+  }
+}
