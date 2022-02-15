@@ -32,6 +32,8 @@ async function run() {
     .pipe(csv())
     .on('data', data => {
       calls.push({
+        type: data.title.split(':')[0],
+        overdose: data.title.startsWith('EMS: OVERDOSE'),
         location: {
           lat: data.lat,
           lon: data.lng,
@@ -39,7 +41,7 @@ async function run() {
         desc: data.desc,
         zip: data.zip,
         title: data.title,
-        timeStamp: data.timeStamp,
+        timeStamp: data.timeStamp.split(' ')[0],
         twp: data.twp,
         addr: data.addr
       });
