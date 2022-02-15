@@ -32,7 +32,7 @@ Afin de répondre aux différents problèmes, vous allez avoir besoin de créer 
 À vous de jouer ! Écrivez les requêtes MongoDB permettant de résoudre les problèmes posés.
 
 ```
-TODO : ajouter les requêtes MongoDB ici
+node ./queries.js
 ```
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :

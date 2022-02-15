@@ -1,3 +1,7 @@
+Quentin GROSMANGIN
+Clément MOISAN
+Matthieu MERILLON
+
 # 911 Calls
 
 **911 Calls** est un workshop permettant de manipuler le même jeu de données dans plusieurs bases NoSQL différentes.
