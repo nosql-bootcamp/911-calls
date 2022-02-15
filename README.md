@@ -86,6 +86,8 @@ Le résultat attendu est :
 | 13096   | 12502   | 12162   |
 
 
+
+
 ### Trouver le top 3 des villes avec le plus d'appels pour overdose
 
 Le résultat attendu est :
@@ -93,6 +95,7 @@ Le résultat attendu est :
 | POTTSTOWN | NORRISTOWN | UPPER MORELAND |
 | --------- | ---------- | -------------- |
 | 203       | 180        | 110            |
+
 
 
 ### Compter le nombre d'appels autour de Lansdale dans un rayon de 500 mètres
@@ -103,5 +106,6 @@ Coordonnées GPS du quartier de *Lansdale, PA, USA* :
 * Longitude : -75.283783
 
 Le résultat attendu est **717**.
+
 
 Pour vous aider, vous pouvez jeter un oeil à [$near](https://docs.mongodb.com/manual/reference/operator/query/near/index.html) et [geo_distance](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html)
