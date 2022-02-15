@@ -20,12 +20,16 @@ const insertCalls = async function (db, callback) {
     .pipe(csv())
     .on('data', data => {
 
+      titleType = data.title.split(":")[0].trim()
+      title = data.title.split(":")[1].trim()
+
       const call = {
         "lat": data.lat,
         "lng": data.lng,
         "desc": data.desc,
         "zip": data.zip,
-        "title": data.title,
+        "titleType": titleType,
+        "title": title,
         "timeStamp": new Date(data.timeStamp),
         "twp": data.twp,
         "addr": data.addr,
