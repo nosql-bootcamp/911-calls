@@ -1,7 +1,7 @@
-//const elasticsearch = require('elasticsearch');
 const csv = require('csv-parser');
 const fs = require('fs');
 const { Client } = require('@elastic/elasticsearch');
+const { Readable } = require('stream');
 
 const ELASTIC_SEARCH_URI = 'http://localhost:9200';
 const INDEX_NAME = '911-calls';
@@ -19,23 +19,58 @@ async function run() {
     index: INDEX_NAME,
     body : {
       // TODO configurer l'index https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
+      mappings: {
+        properties: {
+          "location": { "type": "geo_point" }
+        }
+      }
     }
   });
 
+  let calls = [];
   fs.createReadStream('../911.csv')
     .pipe(csv())
     .on('data', data => {
-      const call = { 
-      };
-      // TODO créer l'objet call à partir de la ligne
+      calls.push({
+        type: data.title.split(':')[0],
+        overdose: data.title.startsWith('EMS: OVERDOSE'),
+        location: {
+          lat: data.lat,
+          lon: data.lng,
+        },
+        desc: data.desc,
+        zip: data.zip,
+        title: data.title,
+        timeStamp: data.timeStamp.split(' ')[0],
+        twp: data.twp,
+        addr: data.addr
+      });
     })
     .on('end', async () => {
-      // TODO insérer les données dans ES en utilisant l'API de bulk https://www.elastic.co/guide/en/elasticsearch/reference/7.x/docs-bulk.html
+      const result = await client.helpers.bulk({
+        datasource: Readable.from(calls),
+        onDocument (doc) {
+          return {
+            index: { _index: INDEX_NAME },
+            create: { doc }
+          }
+        }
+      });
+    
+      console.log(result);
+      client.close();
     });
-  
-
 }
 
 run().catch(console.log);
 
+// Fonction utilitaire permettant de formatter les données pour l'insertion "bulk" dans elastic
+function createBulkInsertQuery(calls) {
+  const body = calls.reduce((acc, call) => {
+    acc.push({ index: { _index: INDEX_NAME } })
+    acc.push(call)
+    return acc
+  }, []);
 
+  return { body };
+}

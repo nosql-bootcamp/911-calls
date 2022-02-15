@@ -22,7 +22,85 @@ GET <nom de votre index>/_count
 À vous de jouer ! Écrivez les requêtes ElasticSearch permettant de résoudre les problèmes posés.
 
 ```
-TODO : ajouter les requêtes ElasticSearch ici
+GET 911-calls/_search
+{
+  "size": 0,
+  "aggs": {
+    "type": {
+      "terms": {
+        "field": "type.keyword"
+      }
+    }
+  }
+}
+```
+
+```
+GET 911-calls/_search
+{
+  "size": 0,
+  "aggs": {
+    "month": {
+      "date_histogram": {
+        "field": "timeStamp",
+        "calendar_interval": "month",
+        "format": "MM/yyyy",
+        "order": {
+          "_count": "desc"
+        }
+      },
+      "aggs": {
+        "top_3": {
+          "bucket_sort": {
+            "size": 3
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+```
+GET 911-calls/_search
+{
+  "size": 0,
+  "aggs": {
+    "overdoses": {
+      "filter": {
+        "term": {
+          "overdose": true
+        }
+      },
+      "aggs": {
+        "town": {
+          "terms": {
+            "field": "twp.keyword",
+            "order": {
+              "_count": "desc"
+            },
+            "size": 3
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+```
+GET 911-calls/_count
+{
+  "query": {
+    "geo_distance": {
+      "distance": 500,
+      "location": {
+        "lat": 40.241493,
+        "lon": -75.283783
+      }
+    }
+  }
+}
 ```
 
 ## Kibana
