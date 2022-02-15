@@ -1,3 +1,6 @@
+LECLERC EUGENE
+CLARY DELPHINE
+
 # 911 Calls
 
 **911 Calls** est un workshop permettant de manipuler le même jeu de données dans plusieurs bases NoSQL différentes.
@@ -77,13 +80,15 @@ Le résultat attendu est :
 | 75589 | 23056 | 54549   |
 
 
-### Trouver les 3 mois ayant comptabilisés le plus d'appels
+
+### Trouver les 3 mois ayant comptabilisé le plus d'appels
 
 Le résultat attendu est :
 
 | 01/2016 | 10/2016 | 12/2016 |
 | ------- | ------- | ------- |
 | 13096   | 12502   | 12162   |
+
 
 
 ### Trouver le top 3 des villes avec le plus d'appels pour overdose
@@ -103,5 +108,7 @@ Coordonnées GPS du quartier de *Lansdale, PA, USA* :
 * Longitude : -75.283783
 
 Le résultat attendu est **717**.
+
+
 
 Pour vous aider, vous pouvez jeter un oeil à [$near](https://docs.mongodb.com/manual/reference/operator/query/near/index.html) et [geo_distance](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html)

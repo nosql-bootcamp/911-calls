@@ -33,6 +33,73 @@ Afin de répondre aux différents problèmes, vous allez avoir besoin de créer 
 
 ```
 TODO : ajouter les requêtes MongoDB ici
+
+1) 
+ EMS  db.calls.find({"cat": "EMS"}).count();
+ Fire :  db.calls.find({"cat": "Fire"}).count()
+ Traffic :  db.calls.find({"cat": "Traffic"}).count()
+
+2)
+  db.calls.aggregate([{
+        $group: {
+            "_id": "$date",
+            "count": {
+                $sum: 1
+            }
+        }
+    },
+    {
+        $sort: {
+            "count": -1
+        }
+    },
+    {
+        $limit: 3
+    }
+])
+
+3)
+
+db.calls.aggregate([{
+    $match: {
+      "title": " OVERDOSE"
+    }
+  },
+  {
+    $group: {
+      "_id": "$city",
+      "count": {
+        $sum: 1
+      }
+    }
+  },
+  {
+    $sort: {
+      "count": -1
+    }
+  },
+  {
+    $limit: 3
+  }
+])
+
+4)
+
+db.calls.createIndex( { location: "2dsphere" } )
+
+db.calls.find(
+   {
+     location:
+       { $near :
+          {
+            $geometry: { type: "Point",  coordinates: [-75.283783,  40.241493 ] },
+            $minDistance: 0,
+            $maxDistance: 500
+          }
+       }
+   }
+)
+
 ```
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :
