@@ -20,7 +20,21 @@ const insertCalls = async function (db, callback) {
     .pipe(csv())
     .on('data', data => {
 
+      const cat = data.title.split(':');
+      const date = data.timeStamp.split('-');
+
       const call = {
+        description: data.desc,
+        city: data.twp,
+        title: cat[1],
+        cat: cat[0],
+        date: date[1] + '/' + date[0],
+        location: {
+          type: "Point",
+          coordinates: [
+            Number(data.lng), Number(data.lat)
+          ]
+        }
       }; // TODO créer l'objet call à partir de la ligne
 
       calls.push(call);
@@ -31,6 +45,7 @@ const insertCalls = async function (db, callback) {
       });
     });
 }
+
 
 MongoClient.connect(MONGO_URL, {
   useUnifiedTopology: true
@@ -44,10 +59,13 @@ MongoClient.connect(MONGO_URL, {
     console.log(`${result.insertedCount} calls inserted`);
     client.close();
   });
+
 });
 
 async function dropCollectionIfExists(db, collection) {
-  const matchingCollections = await db.listCollections({name: COLLECTION_NAME}).toArray();
+  const matchingCollections = await db.listCollections({
+    name: COLLECTION_NAME
+  }).toArray();
   if (matchingCollections.length > 0) {
     await collection.drop();
   }
