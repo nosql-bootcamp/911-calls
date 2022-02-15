@@ -1,0 +1,137 @@
+version: "3.1"
+
+services:
+  ###########
+  ## MONGO ##
+  ###########
+  mongo-1:
+    image: mongo:latest
+    container_name: "mongo-1"
+    restart: always
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: mongo --eval "db.adminCommand('ping')"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    volumes:
+      - mongo-db-storage-1:/data/db
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
+    networks:
+      - mongo-cluster
+
+  mongo-2:
+    image: mongo:latest
+    container_name: "mongo-2"
+    restart: always
+    expose:
+      - 27017
+    healthcheck:
+      test: mongo --eval "db.adminCommand('ping')"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    volumes:
+      - mongo-db-storage-2:/data/db
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
+    networks:
+      - mongo-cluster
+
+  mongo-3:
+    image: mongo:latest
+    container_name: "mongo-3"
+    restart: always
+    expose:
+      - 27017
+    healthcheck:
+      test: mongo --eval "db.adminCommand('ping')"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    volumes:
+      - mongo-db-storage-3:/data/db
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
+    networks:
+      - mongo-cluster
+
+  #################
+  ## SETUP MONGO ##
+  #################
+  # Init mongo replica set using init script
+  mongo-setup:
+    image: mongo:latest
+    restart: "no"
+    depends_on:
+      - mongo-1
+      - mongo-2
+      - mongo-3
+    volumes:
+      - ./setup/setup-replica.js:/setup-replica.js
+    networks:
+      - mongo-cluster
+    entrypoint: mongo --host mongo-1:27017 /setup-replica.js
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.0.0
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    healthcheck:
+      test:
+        [
+            "CMD-SHELL",
+            "curl http://localhost:9200/_cat/health >/dev/null || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  kibana:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:8.0.0
+    volumes:
+      - kibanadata:/usr/share/kibana/data
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    healthcheck:
+      test:
+        [
+            "CMD-SHELL",
+            "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+volumes:
+  mongo-db-storage-1:
+  mongo-db-storage-2:
+  mongo-db-storage-3:
+  elasticsearch-data:
+  kibanadata:
+
+networks:
+  mongo-cluster:
