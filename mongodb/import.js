@@ -26,6 +26,7 @@ const insertCalls = async function (db, callback) {
       const call = {
         "lat": data.lat,
         "lng": data.lng,
+        "loc": { type: "Point", coordinates: [ Number(data.lng), Number(data.lat) ] },
         "desc": data.desc,
         "zip": data.zip,
         "titleType": titleType,
