@@ -76,7 +76,6 @@ Le résultat attendu est :
 | ----- | ----- | ------- |
 | 75589 | 23056 | 54549   |
 
-
 ### Trouver les 3 mois ayant comptabilisés le plus d'appels
 
 Le résultat attendu est :
@@ -85,7 +84,6 @@ Le résultat attendu est :
 | ------- | ------- | ------- |
 | 13096   | 12502   | 12162   |
 
-
 ### Trouver le top 3 des villes avec le plus d'appels pour overdose
 
 Le résultat attendu est :
@@ -93,7 +91,6 @@ Le résultat attendu est :
 | POTTSTOWN | NORRISTOWN | UPPER MORELAND |
 | --------- | ---------- | -------------- |
 | 203       | 180        | 110            |
-
 
 ### Compter le nombre d'appels autour de Lansdale dans un rayon de 500 mètres
 
