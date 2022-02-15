@@ -76,6 +76,11 @@ Le résultat attendu est :
 | ----- | ----- | ------- |
 | 75589 | 23056 | 54549   |
 
+Requêtes mongodb:
+
+`db.calls.find({title: {$regex: /EMS/}}).count()`
+`db.calls.find({title: {$regex: /Fire/}}).count()`
+`db.calls.find({title: {$regex: /Traffic/}}).count()`
 
 ### Trouver les 3 mois ayant comptabilisés le plus d'appels
 
@@ -85,6 +90,21 @@ Le résultat attendu est :
 | ------- | ------- | ------- |
 | 13096   | 12502   | 12162   |
 
+Requête mongodb: 
+
+`db.calls.aggregate(
+[
+{ $group : {
+_id: {
+year : { $year : "$timeStamp" },
+month : { $month : "$timeStamp" },
+},
+count: { $sum: 1 }
+}},
+{ $sort: {count: -1} },
+{ $limit: 3 }
+]
+)`
 
 ### Trouver le top 3 des villes avec le plus d'appels pour overdose
 

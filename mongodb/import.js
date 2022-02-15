@@ -26,7 +26,7 @@ const insertCalls = async function (db, callback) {
         "desc": data.desc,
         "zip": data.zip,
         "title": data.title,
-        "timeStamp": data.timeStamp,
+        "timeStamp": new Date(data.timeStamp),
         "twp": data.twp,
         "addr": data.addr,
         "e": data.e
