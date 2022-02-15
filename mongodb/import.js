@@ -19,8 +19,22 @@ const insertCalls = async function (db, callback) {
   fs.createReadStream('../911.csv')
     .pipe(csv())
     .on('data', data => {
+      const titleSplit = data.title.split(':');
+      const dateSplit = data.timeStamp.split('-');
+
 
       const call = {
+        description: data.desc,
+        city: data.twp,
+        title: titleSplit[1],
+        cat: titleSplit[0],
+        date: dateSplit[1] + '/' + dateSplit[0],
+        location: {
+          type: "Point",
+          coordinates: [
+            Number(data.lng), Number(data.lat)
+          ]
+        }
       }; // TODO créer l'objet call à partir de la ligne
 
       calls.push(call);
@@ -47,7 +61,7 @@ MongoClient.connect(MONGO_URL, {
 });
 
 async function dropCollectionIfExists(db, collection) {
-  const matchingCollections = await db.listCollections({name: COLLECTION_NAME}).toArray();
+  const matchingCollections = await db.listCollections({ name: COLLECTION_NAME }).toArray();
   if (matchingCollections.length > 0) {
     await collection.drop();
   }
